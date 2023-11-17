@@ -18,13 +18,14 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#ifdef MBED_CLOUD_CLIENT_FOTA_ENABLE
-
 #define TRACE_GROUP "FOTA"
 
 #include "fota/fota_app_ifs.h"    // required for implementing custom install callback for Linux like targets
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
+
+#define ACTIVATE_SCRIPT_LENGTH 512
 
 #if !(defined (FOTA_DEFAULT_APP_IFS) && FOTA_DEFAULT_APP_IFS==1)
 int fota_app_on_complete(int32_t status)
@@ -92,8 +93,7 @@ int  fota_app_on_download_authorization(
 }
 #endif //#if !(defined (FOTA_DEFAULT_APP_IFS) && FOTA_DEFAULT_APP_IFS==1)
 
-
-#if defined(TARGET_LIKE_LINUX) && !defined(USE_ACTIVATION_SCRIPT)  // e.g. Yocto target have different update activation logic residing outside of the example
+// e.g. Yocto target have different update activation logic residing outside of the example
 // Simplified Linux use case example.
 // For MAIN component update the the binary file current process is running.
 // Simulate component update by just printing its name.
@@ -102,19 +102,33 @@ int  fota_app_on_download_authorization(
 int fota_app_on_install_candidate(const char *candidate_fs_name, const manifest_firmware_info_t *firmware_info)
 {
     int ret = FOTA_STATUS_SUCCESS;
-    if (0 == strncmp(FOTA_COMPONENT_MAIN_COMPONENT_NAME, firmware_info->component_name, FOTA_COMPONENT_MAX_NAME_SIZE)) {
-        // installing MAIN component
-        ret = fota_app_install_main_app(candidate_fs_name);
-        if (FOTA_STATUS_SUCCESS == ret) {
-            FOTA_APP_PRINT("Successfully installed MAIN component\n");
-            // FOTA does support a case where installer method reboots the system.
+    int rc;
+    char command[ACTIVATE_SCRIPT_LENGTH] = {0};
+                
+    int length = snprintf(command,
+                          ACTIVATE_SCRIPT_LENGTH,
+                          "%s %s %s",
+                          "./fota_update_activate.sh",  candidate_fs_name, MBED_CLOUD_CLIENT_FOTA_LINUX_HEADER_FILENAME);
+    FOTA_ASSERT(length < ACTIVATE_SCRIPT_LENGTH);
+
+    FOTA_TRACE_INFO( "shell command from fota install calback %s", command );
+                                                                                                              
+    /* execute script command */
+    rc = system(command);
+    if( rc ) {
+        ret = FOTA_STATUS_FW_INSTALLATION_FAILED;
+        if( rc == -1 ) {        
+            FOTA_TRACE_ERROR( "shell could not be run" );
+        } else {
+            FOTA_TRACE_ERROR( "result of running command is %d", WEXITSTATUS(rc) );
         }
-    } else {
-        FOTA_APP_PRINT("fota_app_on_install_candidate deprecated for component %s, use component_install_cb\n", firmware_info->component_name);
     }
     return ret;
 }
-#endif // defined(TARGET_LIKE_LINUX) && !defined(USE_ACTIVATION_SCRIPT)
 
-#endif  // MBED_CLOUD_CLIENT_FOTA_ENABLE
 
+int fota_app_on_main_app_verify_install(const fota_header_info_t *expected_header_info)
+{
+    int ret = FOTA_STATUS_SUCCESS;
+    return ret;
+}

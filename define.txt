@@ -34,9 +34,9 @@ add_definitions(-DMBED_CLOUD_CLIENT_FOTA_ENABLE=1)
 add_definitions(-DMBED_CLOUD_CLIENT_FOTA_LINUX_SINGLE_MAIN_FILE=1)
 
 # Set to 1 to enable tracing
-add_definitions(-DMBED_CONF_MBED_TRACE_ENABLE=0)
+add_definitions(-DMBED_CONF_MBED_TRACE_ENABLE=1)
 
-add_definitions(-DMBED_CONF_APP_DEVELOPER_MODE=1)
+add_definitions(-DMBED_CONF_APP_DEVELOPER_MODE=0)
 
 add_definitions(-DPLATFORM_ENABLE_BUTTON=1)
 add_definitions(-DPLATFORM_ENABLE_LED=1)
@@ -58,7 +58,10 @@ option(FOTA_ENABLE "Enable FOTA client module" ON)
 add_definitions(-DFOTA_DEFAULT_APP_IFS=1)
 add_definitions(-DTARGET_LIKE_LINUX=1)
 add_definitions(-DFOTA_CUSTOM_PLATFORM=1)
+add_definitions(-DUSE_ACTIVATION_SCRIPT=1)
 add_definitions(-DMBED_CLOUD_CLIENT_FOTA_SUB_COMPONENT_SUPPORT=1)
+add_definitions(-DFOTA_CERT_MAX_SIZE=1024)
+add_definitions(-DFOTA_CUSTOM_MAIN_APP_VERIFY_INSTALL=1)
 
 # curl fix - https://github.com/curl/curl/issues/7988
 set (CURL_USE_OPENSSL OFF CACHE BOOL "disable openssl" FORCE)
