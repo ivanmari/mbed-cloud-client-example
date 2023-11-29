@@ -63,7 +63,7 @@ add_definitions(-DMBED_CLOUD_CLIENT_FOTA_SUB_COMPONENT_SUPPORT=1)
 add_definitions(-DFOTA_CERT_MAX_SIZE=1024)
 add_definitions(-DFOTA_CUSTOM_MAIN_APP_VERIFY_INSTALL=1)
 
-add_definitions(-DPAL_FS_MOUNT_POINT_PRIMARY="\\"/var/data/pal\\"")
+add_definitions(-DPAL_FS_MOUNT_POINT_PRIMARY="\\"/root/data/pal\\"")
 
 # curl fix - https://github.com/curl/curl/issues/7988
 set (CURL_USE_OPENSSL OFF CACHE BOOL "disable openssl" FORCE)
