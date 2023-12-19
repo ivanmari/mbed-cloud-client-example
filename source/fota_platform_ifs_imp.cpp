@@ -25,7 +25,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
+
 #define ACTIVATE_SCRIPT_LENGTH 512
+
+//PATCH_BEG UPG LED
+#define UPGRADE_LED_NAME led_08
+#define BLINK_PERIOD_DOWNLOAD_UPGRADE 1
+//PATCH_END
 
 #if !(defined (FOTA_DEFAULT_APP_IFS) && FOTA_DEFAULT_APP_IFS==1)
 int fota_app_on_complete(int32_t status)
@@ -88,6 +95,33 @@ int  fota_app_on_download_authorization(
     }
 
     fota_app_authorize();
+
+
+    //PATCH_BEGING UPG LED
+    int rc;
+    char command[ACTIVATE_SCRIPT_LENGTH] = {0};
+                
+    int length = snprintf(command,
+                          ACTIVATE_SCRIPT_LENGTH,
+                          "%s %s %s",
+                          " busctl call jci.obbas.hal /jci/hal/Led jci.hal.Led LedBlink st", UPGRADE_LED_NAME, BLINK_PERIOD_DOWNLOAD_UPGRADE);
+
+    FOTA_TRACE_INFO( "shell command from fota install calback %s", command );
+                                                                                                              
+    /* execute script command */
+    rc = system(command);
+    if( rc ) {
+        ret = FOTA_STATUS_FW_INSTALLATION_FAILED;
+        if( rc == -1 ) {        
+            FOTA_TRACE_ERROR( "shell could not be run" );
+        } else {
+            FOTA_TRACE_ERROR( "result of running command is %d", WEXITSTATUS(rc) );
+        }
+    }
+    return ret;
+    //PATCH_END
+
+
 
     return FOTA_STATUS_SUCCESS;
 }
