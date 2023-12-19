@@ -30,7 +30,7 @@
 #define ACTIVATE_SCRIPT_LENGTH 512
 
 //PATCH_BEG UPG LED
-#define UPGRADE_LED_NAME led_08
+#define UPGRADE_LED_NAME "led_08"
 #define BLINK_PERIOD_DOWNLOAD_UPGRADE 1
 //PATCH_END
 
@@ -115,7 +115,6 @@ int  fota_app_on_download_authorization(
     /* execute script command */
     rc = system(command);
     if( rc ) {
-        ret = FOTA_STATUS_FW_INSTALLATION_FAILED;
         if( rc == -1 ) {        
             FOTA_TRACE_ERROR( "shell could not be run" );
         } else {
