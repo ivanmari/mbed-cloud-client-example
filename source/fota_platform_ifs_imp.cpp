@@ -64,6 +64,10 @@ int fota_app_on_install_authorization()
     return FOTA_STATUS_SUCCESS;
 }
 
+
+#endif //#if !(defined (FOTA_DEFAULT_APP_IFS) && FOTA_DEFAULT_APP_IFS==1)
+
+
 int  fota_app_on_download_authorization(
     const manifest_firmware_info_t *candidate_info,
     fota_component_version_t curr_fw_version)
@@ -118,14 +122,12 @@ int  fota_app_on_download_authorization(
             FOTA_TRACE_ERROR( "result of running command is %d", WEXITSTATUS(rc) );
         }
     }
-    return ret;
     //PATCH_END
 
 
 
     return FOTA_STATUS_SUCCESS;
 }
-#endif //#if !(defined (FOTA_DEFAULT_APP_IFS) && FOTA_DEFAULT_APP_IFS==1)
 
 // e.g. Yocto target have different update activation logic residing outside of the example
 // Simplified Linux use case example.
