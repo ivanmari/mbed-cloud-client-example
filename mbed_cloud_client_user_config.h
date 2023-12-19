@@ -24,7 +24,7 @@
 #define MBED_CLOUD_CLIENT_ENDPOINT_TYPE "default"
 #endif
 
-#define MBED_CLOUD_CLIENT_LIFETIME                  86400
+#define MBED_CLOUD_CLIENT_LIFETIME                  8600
 
 // Option to migrate the bootstrap server to another URI.
 // You must specify both, activate feature via 
