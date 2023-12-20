@@ -95,7 +95,7 @@ int  fota_app_on_download_authorization(
             candidate_info->installed_size
         );
     } else {
-        printf("Update size %zuB\n", candidate_info->payload_size);
+        printf("IVAN: Update size %zuB\n", candidate_info->payload_size);
     }
 
     printf("Before app authorize\n");
