@@ -98,6 +98,8 @@ int  fota_app_on_download_authorization(
         printf("Update size %zuB\n", candidate_info->payload_size);
     }
 
+    printf("Before app authorize\n");
+
     fota_app_authorize();
 
 
