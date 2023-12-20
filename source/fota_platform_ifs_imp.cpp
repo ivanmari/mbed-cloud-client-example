@@ -107,7 +107,7 @@ int  fota_app_on_download_authorization(
                 
     int length = snprintf(command,
                           ACTIVATE_SCRIPT_LENGTH,
-                          "%s %s %s",
+                          "%s %s %d",
                           " busctl call jci.obbas.hal /jci/hal/Led jci.hal.Led LedBlink st", UPGRADE_LED_NAME, BLINK_PERIOD_DOWNLOAD_UPGRADE);
 
     FOTA_TRACE_INFO( "shell command from fota install calback %s", command );
