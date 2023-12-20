@@ -104,6 +104,8 @@ int  fota_app_on_download_authorization(
     //PATCH_BEGING UPG LED
     int rc;
     char command[ACTIVATE_SCRIPT_LENGTH] = {0};
+
+    printf("Setting DBus command\n");
                 
     int length = snprintf(command,
                           ACTIVATE_SCRIPT_LENGTH,
