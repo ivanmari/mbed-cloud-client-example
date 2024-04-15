@@ -16,6 +16,12 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#define ACTIVATE_SCRIPT_LENGTH 512
+
 #include "mbed-cloud-client/MbedCloudClient.h"
 #if (defined(MBED_CLOUD_CLIENT_FOTA_ENABLE) && (MBED_CLOUD_CLIENT_FOTA_ENABLE))
 	
@@ -98,6 +104,16 @@ static int pdmc_component_installer(const char *comp_name, const char *sub_comp_
     printf("-----------------------------------------------------------------------------------\n");
     printf("pdmc_component_installer CB invoked\n");
     print_component_info(comp_name, sub_comp_name, vendor_data, vendor_data_size);
+    printf("File: %s\n", file_name);
+    char command[ACTIVATE_SCRIPT_LENGTH] = {0};
+        int length = snprintf(command,
+                        ACTIVATE_SCRIPT_LENGTH,
+                        "%s %s",
+                        " busctl call jci.obbas.hal /jci/hal/Update jci.hal.Update InstallDebPackage s", file_name);
+
+    printf( "shell command from fota install calback %s", command );
+        /* execute script command */
+    system(command);
     return FOTA_STATUS_SUCCESS;
 }
 #endif
@@ -121,7 +137,7 @@ int fota_platform_init_hook(bool after_upgrade)
     external_component_info.curr_fw_read = 0; // only needed if support_delta = true
     external_component_info.curr_fw_get_digest = 0; // only needed if support_delta = true
 
-    ret = fota_component_add(&external_component_info, "METER", "0.0.0");
+    ret = fota_component_add(&external_component_info, "EMMODELS", "0.0.0");
 
 #if defined(TARGET_LIKE_LINUX) && (MBED_CLOUD_CLIENT_FOTA_SUB_COMPONENT_SUPPORT == 1)	
     printf("Add sub components\n");
