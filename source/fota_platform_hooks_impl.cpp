@@ -104,12 +104,12 @@ static int pdmc_component_installer(const char *comp_name, const char *sub_comp_
     printf("-----------------------------------------------------------------------------------\n");
     printf("pdmc_component_installer CB invoked\n");
     print_component_info(comp_name, sub_comp_name, vendor_data, vendor_data_size);
-    printf("File: %s\n", file_name);
+    printf("File: %s%s\n", PAL_FS_MOUNT_POINT_PRIMARY, file_name);
     char command[ACTIVATE_SCRIPT_LENGTH] = {0};
         int length = snprintf(command,
                         ACTIVATE_SCRIPT_LENGTH,
-                        "%s %s",
-                        " busctl call jci.obbas.hal /jci/hal/Update jci.hal.Update InstallDebPackage s", file_name);
+                        "%s %s%s",
+                        " busctl call jci.obbas.hal /jci/hal/Update jci.hal.Update InstallDebPackage s", PAL_FS_MOUNT_POINT_PRIMARY,file_name);
 
     printf( "shell command from fota install calback %s", command );
         /* execute script command */
@@ -125,7 +125,7 @@ int fota_platform_init_hook(bool after_upgrade)
 
     external_component_info.install_alignment = 1;
     external_component_info.support_delta = false;
-    external_component_info.need_reboot = true;
+    external_component_info.need_reboot = false;
     external_component_info.component_verify_install_cb = NULL;
     external_component_info.component_verify_cb = pdmc_component_verifier;
 #if !defined(TARGET_LIKE_LINUX)
